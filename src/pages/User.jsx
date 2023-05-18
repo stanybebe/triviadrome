@@ -4,8 +4,9 @@ import { io } from 'socket.io-client';
 const socket = io('http://localhost:3001'); // Replace with your server URL
 
 function User() {
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [username, setUsername] = useState ([]);
+  const [message, setMessages] = useState([]);
+
 
   useEffect(() => {
     socket.on('userMessage', (message) => {
@@ -13,28 +14,44 @@ function User() {
     });
   }, []);
 
+
+  const handleMessageChange = (event) => {
+    setMessages(event.target.value);
+  };
+
   const handleSendMessage = (e) => {
     e.preventDefault();
-    socket.emit('userMessage', newMessage);
-    setNewMessage('');
+    socket.emit('userMessage',{username, message});
+
+
+
+ 
+  };
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
   };
 
   return (
     <div>
-      <h1>Trivia Game</h1>
-
-      <ul>
-        {messages.map((message, index) => (
-          <li key={index}>{message}</li>
-        ))}
-      </ul>
-
+      <h2>Welcome, {username}!</h2>
       <form onSubmit={handleSendMessage}>
+        <label htmlFor="username">Username:</label>
         <input
           type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
+          id="username"
+          value={username}
+          onChange={handleUsernameChange}
         />
+
+        <label htmlFor="message">Message:</label>
+        <input
+          type="text"
+          id="message"
+          value={message}
+          onChange={handleMessageChange}
+        />
+
         <button type="submit">Send</button>
       </form>
     </div>
