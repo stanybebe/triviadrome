@@ -6,7 +6,7 @@ const socket = io('http://localhost:3001'); // Replace with your server URL
 function User() {
   const [username, setUsername] = useState ([]);
   const [message, setMessages] = useState([]);
-
+ 
 
   useEffect(() => {
     socket.on('userMessage', (message) => {
@@ -22,7 +22,7 @@ function User() {
   const handleSendMessage = (e) => {
     e.preventDefault();
     socket.emit('userMessage',{username, message});
-
+    setMessages('');
 
 
  

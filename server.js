@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
   socket.on('userMessage', (data) => {
     console.log('Received user message:', data);
     const userId = data.username;
-    const message = data.messages;
+    const message = data.message;
     console.log(id);
     console.log(message);
 
