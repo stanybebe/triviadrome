@@ -8,6 +8,7 @@ const server = http.createServer(app);
 const PORT = 3001;
 
 const activeUsers = {};
+const joinedUsers = [];
 // Serve the client build folder
 
 app.use(cors({
@@ -38,25 +39,70 @@ const io = require('socket.io')(server, {
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
   const id = socket.id;
+  
+  socket.on('getJoinedUsers', (username) => {
+   
+    if (joinedUsers.includes(username)){
+      socket.emit('joinError', 'Username is already taken');
+      return;
+    }
+
+
+      // if (username) {
+      //   // Create a user object with username and socket ID
+        const user = {
+          id: socket.id,
+          username: username,
+        };
+
+        joinedUsers.push(user);
+  
+        // Add the user to the list of joined users
+       
+    io.emit('joinedUsers', joinedUsers);
+    console.log(joinedUsers);
+
+  });
+//////////////////////////////////////////////////////////
   socket.on('userMessage', (data) => {
+
     console.log('Received user message:', data);
     const userId = data.username;
     const message = data.message;
     console.log(id);
     console.log(message);
+    
 
-    // Store the message for the user
-    if (!activeUsers[userId]) {
-      activeUsers[userId] = [];
-    }
-    activeUsers[userId].push(message);
 
     // Emit the message to the admin client
     io.emit('adminMessage', { userId: String(userId), message: String(message) });
   });
 
+  
+//////////////////////////////////////////////////////////
+  socket.on('adminMessageOut', (data) => {
+    console.log('Received admin message:',  data);
+
+    const username = data.userId;
+    const messagesOut = data.messagesOut;
+    const id = data.id;
+  
+  
+
+        io.emit('adminMessageIn', data);
+      
+      
+    // Send the message to the selected user
+
+  });
+
+
   socket.on('disconnect', () => {
     console.log('A user disconnected:', socket.id);
+    const index = joinedUsers.indexOf(socket.id);
+    if (index !== -1) {
+      joinedUsers.splice(index, 1);
+    }
   });
 });
 
