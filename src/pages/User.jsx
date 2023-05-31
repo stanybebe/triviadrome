@@ -4,31 +4,29 @@ import { io } from 'socket.io-client';
 const socket = io('http://localhost:3001'); // Replace with your server URL
 
 function User() {
-  const [message, setMessages] = useState([]);
-  const [messagesIn, setMessagesIn] = useState([]);
-  const [errMessage, setErrmessage] = useState('');
-  const usernameRef = useRef(''); // Create a ref for storing the username
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [messagesIn, setMessages] = useState([]);
+  const [errMessage, setErrMessage] = useState('');
+  const [submitted, setSubmitted] = useState(false); // New state variable
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
-      usernameRef.current = storedUsername;
+      setUsername(storedUsername);
     }
     console.log(storedUsername);
 
     socket.on('adminMessageIn', (data) => {
       console.log('Received admin message:', data);
-      
-      
-      console.log(data);
-      
-      if (usernameRef.current === data.username) {
-        setMessagesIn((prevMessages) => [...prevMessages,data]);
+      if (localStorage.getItem('storedUsername') === data.username) {
+        setMessages((prevMessages) => [...prevMessages, data]);
       }
     });
-     
+
     socket.on('joinError', (data) => {
-      setErrmessage(data);
+      setErrMessage(data);
     });
 
     return () => {
@@ -37,77 +35,126 @@ function User() {
     };
   }, []); // Empty dependency array to run effect only once
 
-  const handleMessageChange = (event) => {
-    setMessages(event.target.value);
-  };
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    const username = usernameRef.current; // Access the stored username
-    socket.emit('getJoinedUsers', username);
-    socket.emit('userMessage', { username, message });
-    setMessages('');
-  };
-
   const handleUsernameChange = (event) => {
-  const newUsername = event.target.value;
-  setUsername(newUsername);
+    
+    setUsername(event.target.value);
   };
 
-  const setUsername = (value) => {
-    usernameRef.current = value;
-    localStorage.setItem('storedUsername', value);
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
   };
-  
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h2 className="text-2xl mb-4">Welcome, {localStorage.getItem('storedUsername')}!</h2>
-      <form onSubmit={handleSendMessage} className="mb-4">
-        <label htmlFor="username" className="text-lg">
-          Username:
-        </label>
-        <input
-          type="text"
-          id="username"
-          onChange={handleUsernameChange}
-          className="w-full p-2 border rounded"
-        />
+  const handleMessageChange = (event) => {
+    setMessage(event.target.value);
+  };
 
-        <label htmlFor="message" className="text-lg mt-4">
-          Message:
-        </label>
-        <input
-          type="text"
-          id="message"
-          value={message}
-          onChange={handleMessageChange}
-          className="w-full p-2 border rounded"
-        />
+  const handleJoinSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+    localStorage.setItem('storedUsername', username);
+    socket.emit('getJoinedUsers', username);
+  };
 
-        <button
-          type="submit"
-          className="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Send
-        </button>
+  const handleMessageSubmit = (e) => {
+    e.preventDefault();
+    socket.emit('userMessage', { username, message });
+    setMessage('');
+  };
+
+  const renderJoinForm = () => (
+    <form className="mb-4" onSubmit={handleJoinSubmit}>
+      <label className="text-lg" htmlFor="username">Username:</label>
+      <input className="w-full p-2 border rounded" type="text" id="username"  value={username} onChange={handleUsernameChange}  required />
+
+      <label className="text-lg" htmlFor="email">Email:</label>
+      <input className="w-full p-2 border rounded" type="email" id="email" value={email} onChange={handleEmailChange} required />
+
+      <button  className="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600" type="submit" >Join</button>
+    </form>
+  );
+
+  const renderChat = () => (
+    <div>
+      <h2 className="text-2xl mb-4" >Welcome, {localStorage.getItem('storedUsername')}!</h2>
+      <form className="mb-4" onSubmit={handleMessageSubmit}>
+        <label className="text-lg" htmlFor="message">Message:</label>
+        <input  className="w-full p-2 border rounded" type="text"  value={message} onChange={handleMessageChange} required />
+
+        <button  className="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+         type="submit">Send</button>
       </form>
 
-      <div className="text-red-500 mb-4">{errMessage}</div>
+      <div>
+        {errMessage}
+      </div>
 
       <div>
         <h1 className="text-2xl">Admin messages</h1>
-        <ul className="mt-4">
+        <ul className="mb-4" >
           {messagesIn.map((mes, index) => (
-            <li key={index} className="mb-2">
-              <strong className="text-blue-500">admin: </strong>
-              {mes.messagesOut}
+            <li className="mb-2" key={index}>
+              <strong className="text-2xl"> admin: {mes.messagesOut} </strong>
             </li>
           ))}
         </ul>
       </div>
     </div>
   );
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-5" >
+      {submitted ? renderChat() : renderJoinForm()}
+    </div>
+  );
 }
+//   return (
+//     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-5">
+//       <h2 className="text-2xl mb-4">Welcome, {localStorage.getItem('storedUsername')}!</h2>
+//       <form onSubmit={handleSendMessage} className="mb-4">
+//         <label htmlFor="username" className="text-lg">
+//           Username:
+//         </label>
+//         <input
+//           type="text"
+//           id="username"
+//           onChange={handleUsernameChange}
+//           className="w-full p-2 border rounded"
+//         />
+
+//         <label htmlFor="message" className="text-lg mt-4">
+//           Message:
+//         </label>
+//         <input
+//           type="text"
+//           id="message"
+//           value={message}
+//           onChange={handleMessageChange}
+//           className="w-full p-2 border rounded"
+//         />
+
+//         <button
+//           type="submit"
+//           className="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+//         >
+//           Send
+//         </button>
+//       </form>
+
+//       <div className="text-red-500 mb-4">{errMessage}</div>
+
+//       <div>
+//         <h1 className="text-2xl">Admin messages</h1>
+//         <ul className="mt-4">
+//           {messagesIn.map((mes, index) => (
+//             <li key={index} className="mb-2">
+//               <strong className="text-blue-500">admin: </strong>
+//               {mes.messagesOut}
+//             </li>
+//           ))}
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// }
 
 export default User;
