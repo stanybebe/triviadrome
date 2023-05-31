@@ -10,6 +10,12 @@ function User() {
   const usernameRef = useRef(''); // Create a ref for storing the username
 
   useEffect(() => {
+    const storedUsername = localStorage.getItem('storedUsername');
+    if (storedUsername) {
+      usernameRef.current = storedUsername;
+    }
+    console.log(storedUsername);
+
     socket.on('adminMessageIn', (data) => {
       console.log('Received admin message:', data);
       
@@ -44,42 +50,58 @@ function User() {
   };
 
   const handleUsernameChange = (event) => {
-    usernameRef.current = event.target.value; // Update the stored username
+  const newUsername = event.target.value;
+  setUsername(newUsername);
   };
 
+  const setUsername = (value) => {
+    usernameRef.current = value;
+    localStorage.setItem('storedUsername', value);
+  };
+  
+
   return (
-    <div>
-      <h2>Welcome, {usernameRef.current}!</h2>
-      <form onSubmit={handleSendMessage}>
-        <label htmlFor="username">Username:</label>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <h2 className="text-2xl mb-4">Welcome, {localStorage.getItem('storedUsername')}!</h2>
+      <form onSubmit={handleSendMessage} className="mb-4">
+        <label htmlFor="username" className="text-lg">
+          Username:
+        </label>
         <input
           type="text"
           id="username"
           onChange={handleUsernameChange}
+          className="w-full p-2 border rounded"
         />
 
-        <label htmlFor="message">Message:</label>
+        <label htmlFor="message" className="text-lg mt-4">
+          Message:
+        </label>
         <input
           type="text"
           id="message"
           value={message}
           onChange={handleMessageChange}
+          className="w-full p-2 border rounded"
         />
 
-        <button type="submit">Send</button>
+        <button
+          type="submit"
+          className="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Send
+        </button>
       </form>
 
-      <div>
-        {errMessage}
-      </div>
+      <div className="text-red-500 mb-4">{errMessage}</div>
 
       <div>
-        <h1>Admin messages</h1>
-        <ul>
+        <h1 className="text-2xl">Admin messages</h1>
+        <ul className="mt-4">
           {messagesIn.map((mes, index) => (
-            <li key={index}>
-              <strong> admin:{mes.messagesOut} </strong>
-              
+            <li key={index} className="mb-2">
+              <strong className="text-blue-500">admin: </strong>
+              {mes.messagesOut}
             </li>
           ))}
         </ul>

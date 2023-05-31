@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const PORT = 3001;
 
-const activeUsers = {};
+
 const joinedUsers = [];
 // Serve the client build folder
 
