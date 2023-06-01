@@ -7,10 +7,9 @@ function User() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [messagesIn, setMessages] = useState([]);
   const [errMessage, setErrMessage] = useState('');
   const [submitted, setSubmitted] = useState(false); // New state variable
-
+  const [allMessages, setAllMessages] = useState([]);
   useEffect(() => {
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
@@ -21,7 +20,11 @@ function User() {
     socket.on('adminMessageIn', (data) => {
       console.log('Received admin message:', data);
       if (localStorage.getItem('storedUsername') === data.username) {
-        setMessages((prevMessages) => [...prevMessages, data]);
+        const newMessageAdmin = {
+          sender: 'Admin',
+          content: data.messagesOut
+        };
+        setAllMessages((prevMessages) => [...prevMessages, newMessageAdmin]);
       }
     });
 
@@ -57,9 +60,17 @@ function User() {
 
   const handleMessageSubmit = (e) => {
     e.preventDefault();
+    const newMessage = {
+      sender: username,
+      content: message
+    };
+    setAllMessages((prevAllMessages) => [...prevAllMessages, newMessage]);
     socket.emit('userMessage', { username, message });
     setMessage('');
+   
   };
+
+ 
 
   const renderJoinForm = () => (
     <form className="mb-4" onSubmit={handleJoinSubmit}>
@@ -74,6 +85,7 @@ function User() {
   );
 
   const renderChat = () => (
+ 
     <div>
       <h2 className="text-2xl mb-4" >Welcome, {localStorage.getItem('storedUsername')}!</h2>
       <form className="mb-4" onSubmit={handleMessageSubmit}>
@@ -88,15 +100,15 @@ function User() {
         {errMessage}
       </div>
 
-      <div>
-        <h1 className="text-2xl">Admin messages</h1>
-        <ul className="mb-4" >
-          {messagesIn.map((mes, index) => (
-            <li className="mb-2" key={index}>
-              <strong className="text-2xl"> admin: {mes.messagesOut} </strong>
-            </li>
-          ))}
-        </ul>
+    
+      <h1 className="text-2xl">Messages</h1>
+      <div  className="h-80 bg-white overflow-y-auto">
+        {allMessages.map((msg, index) => (
+          <div key={index} className="p-3">
+            <strong className="sender">{msg.sender}: </strong>
+            <span className="content">{msg.content}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
