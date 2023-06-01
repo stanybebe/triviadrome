@@ -104,7 +104,7 @@ function User() {
       <h1 className="text-2xl">Messages</h1>
       <div  className="h-80 bg-white overflow-y-auto">
         {allMessages.map((msg, index) => (
-          <div key={index} className="p-3">
+          <div key={index} className="message">
             <strong className="sender">{msg.sender}: </strong>
             <span className="content">{msg.content}</span>
           </div>
