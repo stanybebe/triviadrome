@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 function Admin() {
   const [messages, setMessages] = useState([]);
   const [messagesOut, setMessagesOut] = useState([]);
-  const [adminOut, setAdminOut] = useState([]);
+  const [allOut, setAllOut] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
@@ -13,7 +13,7 @@ function Admin() {
 
 
   useEffect(() => {
-    console.log(adminOut);
+    console.log(allOut);
     const socket = io('http://localhost:3001');
     socket.emit('getJoinedUsers');
     
@@ -36,7 +36,15 @@ socket.on('joinedUsers', (users) => {
       // Check the type of userId and message
       console.log(typeof data.userId, typeof data.message);
       // Update the messages state with the new message
+      const newMessageUser = {
+        sender: data.userId,
+        username: data.userId,
+        content: data.message,
+      };
+
       setMessages((prevMessages) => [...prevMessages, { userId, message }]);
+      setAllOut((prevMessages) => [...prevMessages, newMessageUser]);
+
     });
 
     return () => {
@@ -64,13 +72,13 @@ socket.on('joinedUsers', (users) => {
     
       }
 
-      const outmes = {
-        username: selectedUser, messagesOut
-      }
-      setAdminOut((prevAdminOut) => [
-        ...prevAdminOut,
-        {selectedUser,messagesOut},
-      ]);
+      const newMessageAdmin = {
+        sender: 'Admin',
+        username: selectedUser,
+        content: messagesOut,
+      };
+
+      setAllOut((prevMessages) => [...prevMessages, newMessageAdmin]);
     };
 
   return (
@@ -98,25 +106,15 @@ socket.on('joinedUsers', (users) => {
           <div>
             <h4 className="text-lg mb-2">Selected User: {selectedUser}</h4>
             <div className="bg-white p-4 h-80 overflow-y-auto">
-              {messages.map((message, index) => {
-                if(message.userId===selectedUser){
-                  return(
-                    <div key={index} className="mb-2">
-                    <strong>User {message.userId}: </strong>
-                    {message.message}
-                  </div>
-                  );
-                }
-             
-                 })}
 
 
-     {adminOut.map((admes, index) => {
-  if (admes.selectedUser === selectedUser) {
+
+     {allOut.map((admes, index) => {
+  if (admes.username === selectedUser) {
     return (
       <div key={index} className="mb-2">
-        <strong>Admin: </strong>
-        {admes.messagesOut}
+        <strong>{admes.sender} </strong>
+        {admes.content}
       </div>
     );
   }
