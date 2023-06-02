@@ -4,26 +4,30 @@ import { io } from 'socket.io-client';
 function Admin() {
   const [messages, setMessages] = useState([]);
   const [messagesOut, setMessagesOut] = useState([]);
+  const [adminOut, setAdminOut] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
   const sockets = io('http://localhost:3001');
+
+
   useEffect(() => {
+    console.log(adminOut);
     const socket = io('http://localhost:3001');
     socket.emit('getJoinedUsers');
     
-    socket.on('joinedUsers', (users) => {
-      const uniqueUsernames = new Set();
-      const filteredUsers = users.filter((user) => {
-        if (!uniqueUsernames.has(user.username) && user.username) {
-          uniqueUsernames.add(user.username);
-          return true;
-        }
-        return false;
-      });
-      setJoinedUsers(filteredUsers);
-    });
+socket.on('joinedUsers', (users) => {
+  const uniqueUsernames = new Set();
+  const filteredUsers = users.filter((user) => {
+    if (!uniqueUsernames.has(user.username) && user.username) {
+      uniqueUsernames.add(user.username);
+      return true;
+    }
+    return false;
+  });
+  setJoinedUsers(filteredUsers);
+});
 
        socket.on('adminMessage', (data) => {
       console.log('Received message:', data);
@@ -52,10 +56,21 @@ function Admin() {
     // Handle sending message to the selected user
     const handleSendMessage = () => {
   
-      if (selectedUser) {
+      if (selectedUser){
+ 
+       
         sockets.emit('adminMessageOut', { id: selectedUserId, username: selectedUser, messagesOut });
         setMessagesOut('');
+    
       }
+
+      const outmes = {
+        username: selectedUser, messagesOut
+      }
+      setAdminOut((prevAdminOut) => [
+        ...prevAdminOut,
+        {selectedUser,messagesOut},
+      ]);
     };
 
   return (
@@ -83,12 +98,34 @@ function Admin() {
           <div>
             <h4 className="text-lg mb-2">Selected User: {selectedUser}</h4>
             <div className="bg-white p-4 h-80 overflow-y-auto">
-              {messages.map((message, index) => (
-                <div key={index} className="mb-2">
-                  <strong>User {message.userId}: </strong>
-                  {message.message}
-                </div>
-              ))}
+              {messages.map((message, index) => {
+                if(message.userId===selectedUser){
+                  return(
+                    <div key={index} className="mb-2">
+                    <strong>User {message.userId}: </strong>
+                    {message.message}
+                  </div>
+                  );
+                }
+             
+                 })}
+
+
+     {adminOut.map((admes, index) => {
+  if (admes.selectedUser === selectedUser) {
+    return (
+      <div key={index} className="mb-2">
+        <strong>Admin: </strong>
+        {admes.messagesOut}
+      </div>
+    );
+  }
+  return null; // Add this line to skip rendering admin messages that don't match the selected user
+})}
+
+              
+
+                 
             </div>
             <div className="mt-4">
               <input
