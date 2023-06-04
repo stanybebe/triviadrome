@@ -4,7 +4,7 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const app = express();
-
+const socketIO = require('socket.io');
 
 const PORT = process.env.PORT || 3001;
 
@@ -25,7 +25,7 @@ const server = express()
   .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-const io = require('socket.io')(server);
+const io = socketIO(server);
 
 // Socket.IO configuration
 io.on('connection', (socket) => {
