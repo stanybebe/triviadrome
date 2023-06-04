@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io('https://triviadrome.herokuapp.com'); // Replace with your server URL
+const socket = io(); // Replace with your server URL
 
 function User() {
   const [username, setUsername] = useState('');
