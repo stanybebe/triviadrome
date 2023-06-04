@@ -4,7 +4,7 @@ const cors = require('cors');
 const app = express();
 const server = http.createServer(app);
 
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
 
 
 const joinedUsers = [];
@@ -22,9 +22,9 @@ app.get('/', (req, res) => {
   res.sendFile('client/build/index.html', { root: __dirname });
 });
 
-// server.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
+server.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`);
+});
 
 const io = require('socket.io')(server, {
   cors: {
