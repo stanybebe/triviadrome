@@ -22,9 +22,9 @@ app.get('/', (req, res) => {
   res.sendFile('client/build/index.html', { root: __dirname });
 });
 
-server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// server.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
 
 const io = require('socket.io')(server, {
   cors: {
