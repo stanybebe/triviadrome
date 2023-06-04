@@ -9,12 +9,12 @@ function Admin() {
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const sockets = io('http://localhost:3001');
+  const sockets = io('http://192.168.0.7:3001');
 
 
   useEffect(() => {
     console.log(allOut);
-    const socket = io('http://localhost:3001');
+    const socket = io('http://192.168.0.7:3001');
     socket.emit('getJoinedUsers');
     
 socket.on('joinedUsers', (users) => {

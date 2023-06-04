@@ -1,18 +1,17 @@
 const express = require('express');
 const http = require('http');
-const socketIO = require('socket.io');
 const cors = require('cors');
 const app = express();
 const server = http.createServer(app);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 
 const joinedUsers = [];
 // Serve the client build folder
 
 app.use(cors({
-  origin: 'http://localhost:3000' // Replace with the actual origin of your React app
+  origin: 'http://192.168.0.7:3000' // Replace with the actual origin of your React app
 
 }));
 
@@ -29,7 +28,7 @@ server.listen(PORT, () => {
 
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'http://localhost:3000', // Replace with the actual origin of your React app
+    origin: 'http://192.168.0.7:3000', // Replace with the actual origin of your React app
     methods: ['GET', 'POST'], // Specify the allowed HTTP methods
     credentials: false, // If you want to allow cookies and other credentials
   },
@@ -48,8 +47,6 @@ io.on('connection', (socket) => {
     }
 
 
-      // if (username) {
-      //   // Create a user object with username and socket ID
         const user = {
           id: socket.id,
           username: username,
@@ -57,7 +54,7 @@ io.on('connection', (socket) => {
 
         joinedUsers.push(user);
   
-        // Add the user to the list of joined users
+  
        
     io.emit('joinedUsers', joinedUsers);
     console.log(joinedUsers);
@@ -72,9 +69,6 @@ io.on('connection', (socket) => {
     console.log(id);
     console.log(message);
     
-
-
-    // Emit the message to the admin client
     io.emit('adminMessage', { userId: String(userId), message: String(message) });
   });
 
@@ -83,16 +77,11 @@ io.on('connection', (socket) => {
   socket.on('adminMessageOut', (data) => {
     console.log('Received admin message:',  data);
 
-    const username = data.userId;
-    const messagesOut = data.messagesOut;
-    const id = data.id;
-  
   
 
         io.emit('adminMessageIn', data);
       
-      
-    // Send the message to the selected user
+    
 
   });
 
@@ -105,12 +94,4 @@ io.on('connection', (socket) => {
     }
   });
 });
-
-  // Handle disconnection
-
-
-
-// Start the server
-
-
 

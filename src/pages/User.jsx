@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3001'); // Replace with your server URL
+const socket = io('http://192.168.0.7:3001'); // Replace with your server URL
 
 function User() {
   const [username, setUsername] = useState('');
