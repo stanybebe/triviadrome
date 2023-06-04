@@ -26,13 +26,7 @@ server.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
 
-const io = require('socket.io')(server, {
-  cors: {
-    origin:  'https://triviadrome.herokuapp.com', // Replace with the actual origin of your React app
-    methods: ['GET', 'POST'], // Specify the allowed HTTP methods
-    credentials: false, // If you want to allow cookies and other credentials
-  },
-});
+const io = require('socket.io')(server);
 
 // Socket.IO configuration
 io.on('connection', (socket) => {
