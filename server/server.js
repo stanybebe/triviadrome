@@ -3,7 +3,7 @@ const http = require('http');
 const cors = require('cors');
 const app = express();
 
-const INDEX = '/index.html';
+
 const PORT = process.env.PORT || 3001;
 
 
@@ -15,10 +15,9 @@ app.use(cors());
 //   origin: 'https://triviadrome.herokuapp.com/' // Replace with the actual origin of your React app
 
 // }));
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
+
+app.use(express.static('public'));
 
 
 
