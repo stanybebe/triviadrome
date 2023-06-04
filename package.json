@@ -20,11 +20,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start --port 3000\" \"node server.js --port 3001\"",
-    "server": "node server.js --port 3001",
+  
     "build": "npm run build-client && npm run build-server",
     "build-client": "react-scripts build",
-    "build-server": "cross-env NODE_ENV=production node server.js &",
+    "build-server": "cross-env NODE_ENV=production node server.js --port 3001 &",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
