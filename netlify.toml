@@ -1,3 +1,7 @@
 [build]
-  command = "npm run build"
-  publish = "build"
+  command = npm run build && node server.js""
+
+  publish = "/triviadrome"
+
+[build.environment]
+NODE_ENV = "production"
