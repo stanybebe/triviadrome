@@ -2,29 +2,25 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const app = express();
-const server = http.createServer(app);
 
+const INDEX = '/index.html';
 const PORT = process.env.PORT || 3001;
 
 
 const joinedUsers = [];
 // Serve the client build folder
 
-// app.use(cors({
+
+app.use(cors());
 //   origin: 'https://triviadrome.herokuapp.com/' // Replace with the actual origin of your React app
 
 // }));
+const server = express()
+  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-app.use(express.static('client/build'));
 
-// Handle requests to the root URL
-app.get('/', (req, res) => {
-  res.sendFile('client/build/index.html', { root: __dirname });
-});
 
-server.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
-});
 
 const io = require('socket.io')(server);
 
