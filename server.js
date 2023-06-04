@@ -11,7 +11,7 @@ const joinedUsers = [];
 // Serve the client build folder
 
 app.use(cors({
-  origin: 'http://192.168.0.7:3000' // Replace with the actual origin of your React app
+  origin: 'https://master--brilliant-arithmetic-e7a72c.netlify.app:3000' // Replace with the actual origin of your React app
 
 }));
 

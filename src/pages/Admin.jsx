@@ -9,12 +9,12 @@ function Admin() {
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const sockets = io('http://192.168.0.7:3001');
+  const sockets = io('https://master--brilliant-arithmetic-e7a72c.netlify.app:3001');
 
 
   useEffect(() => {
     console.log(allOut);
-    const socket = io('http://192.168.0.7:3001');
+    const socket = io('https://master--brilliant-arithmetic-e7a72c.netlify.app:3001');
     socket.emit('getJoinedUsers');
     
 socket.on('joinedUsers', (users) => {
