@@ -19,7 +19,7 @@ app.use(cors());
 
 app.use(express.static('public'));
 
-
+var server = http.createServer(app);
 
 const io = require('socket.io')(server);
 
