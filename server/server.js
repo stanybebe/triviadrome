@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
@@ -17,9 +19,11 @@ app.use(cors());
 // }));
 
 
-app.use(express.static('public'));
+const INDEX = '../public/index.html';
 
-var server = http.createServer(app);
+const server = express()
+  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = require('socket.io')(server);
 
