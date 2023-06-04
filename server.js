@@ -28,7 +28,7 @@ server.listen(PORT, () => {
 
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'http://192.168.0.7:3000', // Replace with the actual origin of your React app
+    origin: 'https://master--brilliant-arithmetic-e7a72c.netlify.app:3000', // Replace with the actual origin of your React app
     methods: ['GET', 'POST'], // Specify the allowed HTTP methods
     credentials: false, // If you want to allow cookies and other credentials
   },
