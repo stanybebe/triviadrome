@@ -11,7 +11,7 @@ const joinedUsers = [];
 // Serve the client build folder
 
 app.use(cors({
-  origin: 'https://triviadrome.herokuapp.comsocket.io/?EIO=4&transport=polling&t=OY7-4j5' // Replace with the actual origin of your React app
+  origin: 'https://triviadrome.herokuapp.com:3000' // Replace with the actual origin of your React app
 
 }));
 
@@ -28,7 +28,7 @@ server.listen(PORT, () => {
 
 const io = require('socket.io')(server, {
   cors: {
-    origin:  'https://triviadrome.herokuapp.comsocket.io/?EIO=4&transport=polling&t=OY7-4j5', // Replace with the actual origin of your React app
+    origin:  'https://triviadrome.herokuapp.com:3000', // Replace with the actual origin of your React app
     methods: ['GET', 'POST'], // Specify the allowed HTTP methods
     credentials: false, // If you want to allow cookies and other credentials
   },
