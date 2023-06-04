@@ -21,7 +21,7 @@
   "scripts": {
     "start": "react-scripts start --port 3000 && node server.js --port 3001",
     "server": "node server.js --port 3001",
-    "build": "react-scripts build && npm run server",
+    "build": "npm run server && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
