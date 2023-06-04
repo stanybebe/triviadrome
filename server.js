@@ -19,7 +19,7 @@ app.use(cors());
 // }));
 
 
-const INDEX = '../public/index.html';
+const INDEX = '/public/index.html';
 
 const server = express()
   .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
