@@ -10,10 +10,10 @@ const PORT = process.env.PORT || 3001;
 const joinedUsers = [];
 // Serve the client build folder
 
-app.use(cors({
-  origin: 'https://triviadrome.herokuapp.com/' // Replace with the actual origin of your React app
+// app.use(cors({
+//   origin: 'https://triviadrome.herokuapp.com/' // Replace with the actual origin of your React app
 
-}));
+// }));
 
 app.use(express.static('client/build'));
 
