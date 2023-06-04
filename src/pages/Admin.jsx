@@ -9,12 +9,12 @@ function Admin() {
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const sockets = io('https://master--brilliant-arithmetic-e7a72c.netlify.app:3001');
+  const sockets = io('https://triviadrome.herokuapp.com:3001');
 
 
   useEffect(() => {
     console.log(allOut);
-    const socket = io('https://master--brilliant-arithmetic-e7a72c.netlify.app:3001');
+    const socket = io('https://triviadrome.herokuapp.com:3001');
     socket.emit('getJoinedUsers');
     
 socket.on('joinedUsers', (users) => {
