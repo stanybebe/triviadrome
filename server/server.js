@@ -20,7 +20,7 @@ app.use(cors());
 // }));
 
 
-const INDEX = '/index.html';
+const INDEX = '../client/public/index.html';
 app.use(express.static(path.resolve(__dirname, "./client/build")))
 const server = express()
   .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
