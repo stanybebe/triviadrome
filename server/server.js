@@ -25,7 +25,7 @@ const server = express()
 
 const io = socketIO(server, {
   cors: {
-    origin: 'https://triviadrome.herokuapp.com/' ,
+    origin: 'https://master--brilliant-arithmetic-e7a72c.netlify.app/' ,
     methods: ["GET", "POST"]
   },
   transports: ['websocket', 'polling'],

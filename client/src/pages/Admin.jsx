@@ -9,12 +9,12 @@ function Admin() {
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const sockets = io("https://triviadrome.herokuapp.com/socket.io/");
+  const sockets = io("https://triviadrome.herokuapp.com/");
 
 
   useEffect(() => {
     console.log(allOut);
-    const socket = io("https://triviadrome.herokuapp.com/socket.io/");
+    const socket = io("https://triviadrome.herokuapp.com/");
     socket.emit('getJoinedUsers');
     
 socket.on('joinedUsers', (users) => {
