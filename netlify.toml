@@ -1,3 +1,0 @@
-[build]
-command = "cd client && npm run build"
-
