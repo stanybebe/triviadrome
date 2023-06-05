@@ -14,10 +14,10 @@ const joinedUsers = [];
 // Serve the client build folder
 
 
-app.use(cors());
-//   origin: 'https://triviadrome.herokuapp.com/' // Replace with the actual origin of your React app
+app.use(cors({
+  origin: 'https://triviadrome.herokuapp.com/' // Replace with the actual origin of your React app
 
-// }));
+}));
 
 
 const INDEX = '../client/public/index.html';
@@ -27,6 +27,10 @@ const server = express()
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = socketIO(server, {
+  cors: {
+    origin: 'https://triviadrome.herokuapp.com/',
+    methods: ["GET", "POST"]
+  },
   transports: ['websocket', 'polling'],
 });
 
