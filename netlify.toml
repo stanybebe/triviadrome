@@ -1,5 +1,5 @@
 [build]
-command = "npm run build && node server.js"
+command = "npm run build"
 publish = "./client"
 
 [build.environment]
