@@ -1,0 +1,6 @@
+[build]
+command = "npm run build && node server.js"
+publish = "./client"
+
+[build.environment]
+NODE_ENV = "production"
