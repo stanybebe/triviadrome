@@ -22,7 +22,7 @@
     "ws": "^8.13.0"
   },
   "scripts": {
-
+      "start": "npm run start"
   },
   "eslintConfig": {
     "extends": [
