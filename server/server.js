@@ -28,7 +28,7 @@ const server = express()
 
 const io = socketIO(server, {
   cors: {
-    origin: 'https://triviadrome.herokuapp.com/',
+    origin: 'https://triviadrome.herokuapp.com/' ,
     methods: ["GET", "POST"]
   },
   transports: ['websocket', 'polling'],
