@@ -1,4 +1,4 @@
-
+'use strict';
 
 const express = require('express');
 const http = require('http');
@@ -18,17 +18,16 @@ app.use(cors());
 
 
 const INDEX = '/index.html';
-app.use(express.static(path.resolve(__dirname, "./client/build")))
+
 const server = express()
   .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = socketIO(server, {
   cors: {
-    origin: 'https://master--brilliant-arithmetic-e7a72c.netlify.app/' ,
+    origin: 'https://brilliant-arithmetic-e7a72c.netlify.app/' ,
     methods: ["GET", "POST"]
   },
-  transports: ['websocket', 'polling'],
 });
 
 
