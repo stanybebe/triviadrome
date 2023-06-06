@@ -10,7 +10,7 @@ function Admin() {
   const [selectedUserId, setSelectedUserId] = useState('');
 
   const socketURL = "https://triviadrome.herokuapp.com/";
-  const sockets = useRef(null);
+  let sockets = useRef(null);
 
   useEffect(() => {
     sockets.current = io(socketURL, {
@@ -53,7 +53,7 @@ sockets.current.on('joinedUsers', (users) => {
     return () => {
       sockets.current.disconnect();
     };
-  }, []);
+  }, [socketURL]);
 
   const handleUserSelect = (user,userId) => {
     setSelectedUser(user);
