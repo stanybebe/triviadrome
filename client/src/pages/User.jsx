@@ -10,8 +10,7 @@ function User() {
   const [errMessage, setErrMessage] = useState('');
   const [submitted, setSubmitted] = useState(false); // New state variable
   const [allMessages, setAllMessages] = useState([]);
-  const socket = io("https://triviadrome.herokuapp.com/", {  transports: ['websocket'],
-  upgrade: false});
+  const socket = io("https://triviadrome.herokuapp.com/");
   
   useEffect(() => {
  
