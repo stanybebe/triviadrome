@@ -27,8 +27,9 @@ server.listen(PORT, () => {
 
 const io = socketIO(server, {
   cors: {
-    origin: 'https://brilliant-arithmetic-e7a72c.netlify.app/' ,
-    methods: ["GET", "POST"]
+    origin: 'https://brilliant-arithmetic-e7a72c.netlify.app' ,
+    methods: ["GET", "POST"],
+    credentials: false
   },
 });
 
