@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { io } from 'socket.io-client';
 
 // Replace with your server URL
@@ -10,17 +10,21 @@ function User() {
   const [errMessage, setErrMessage] = useState('');
   const [submitted, setSubmitted] = useState(false); // New state variable
   const [allMessages, setAllMessages] = useState([]);
-  const socket = io("https://triviadrome.herokuapp.com/");
+  const socketURL = "https://triviadrome.herokuapp.com/";
+  const sockets = useRef(null);
+
   
   useEffect(() => {
- 
+    sockets.current = io(socketURL, {
+      autoConnect: false,
+ });
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
       setUsername(storedUsername);
     }
     console.log(storedUsername);
 
-    socket.on('adminMessageIn', (data) => {
+    sockets.current.on('adminMessageIn', (data) => {
       console.log('Received admin message:', data);
       if (localStorage.getItem('storedUsername') === data.username) {
         const newMessageAdmin = {
@@ -31,13 +35,13 @@ function User() {
       }
     });
 
-    socket.on('joinError', (data) => {
+    sockets.current.on('joinError', (data) => {
       setErrMessage(data);
     });
 
     return () => {
-      socket.off('adminMessageIn');
-      socket.off('joinError');
+      sockets.current.off('adminMessageIn');
+      sockets.current.off('joinError');
     };
   }, []); // Empty dependency array to run effect only once
 
@@ -58,7 +62,7 @@ function User() {
     e.preventDefault();
     setSubmitted(true);
     localStorage.setItem('storedUsername', username);
-    socket.emit('getJoinedUsers', username);
+    sockets.current.emit('getJoinedUsers', username);
   };
 
   const handleMessageSubmit = (e) => {
@@ -68,7 +72,7 @@ function User() {
       content: message
     };
     setAllMessages((prevAllMessages) => [...prevAllMessages, newMessage]);
-    socket.emit('userMessage', { username, message });
+    sockets.current.emit('userMessage', { username, message });
     setMessage('');
    
   };

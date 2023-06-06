@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
 function Admin() {
@@ -9,15 +9,18 @@ function Admin() {
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const sockets = io("https://triviadrome.herokuapp.com/");
-
+  const socketURL = "https://triviadrome.herokuapp.com/";
+  const sockets = useRef(null);
 
   useEffect(() => {
+    sockets.current = io(socketURL, {
+      autoConnect: false,
+ });
     console.log(allOut);
     // const socket = io("http://triviadrome.herokuapp.com");
-    sockets.emit('getJoinedUsers');
+    sockets.current.emit('getJoinedUsers');
     
-sockets.on('joinedUsers', (users) => {
+sockets.current.on('joinedUsers', (users) => {
   const uniqueUsernames = new Set();
   const filteredUsers = users.filter((user) => {
     if (!uniqueUsernames.has(user.username) && user.username) {
@@ -29,7 +32,7 @@ sockets.on('joinedUsers', (users) => {
   setJoinedUsers(filteredUsers);
 });
 
-       sockets.on('adminMessage', (data) => {
+       sockets.current.on('adminMessage', (data) => {
       console.log('Received message:', data);
       const { userId, message } = data;
       console.log(data);
@@ -48,7 +51,7 @@ sockets.on('joinedUsers', (users) => {
     });
 
     return () => {
-      sockets.disconnect();
+      sockets.current.disconnect();
     };
   }, []);
 
@@ -67,7 +70,7 @@ sockets.on('joinedUsers', (users) => {
       if (selectedUser){
  
        
-        sockets.emit('adminMessageOut', { id: selectedUserId, username: selectedUser, messagesOut });
+        sockets.current.emit('adminMessageOut', { id: selectedUserId, username: selectedUser, messagesOut });
         setMessagesOut('');
     
       }
