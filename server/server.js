@@ -27,7 +27,7 @@ server.listen(PORT, () => {
 
 const io = socketIO(server, {
   cors: {
-    origin: 'http://brilliant-arithmetic-e7a72c.netlify.app/' ,
+    origin: 'https://brilliant-arithmetic-e7a72c.netlify.app/' ,
     methods: ["GET", "POST"]
   },
 });
@@ -37,7 +37,6 @@ const io = socketIO(server, {
 // Socket.IO configuration
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
-  console.log('why', socket.id);
   const id = socket.id;
   
   socket.on('getJoinedUsers', (username) => {

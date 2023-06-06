@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io("https://triviadrome.herokuapp.com/");// Replace with your server URL
+// Replace with your server URL
 
 function User() {
   const [username, setUsername] = useState('');
@@ -11,6 +11,7 @@ function User() {
   const [submitted, setSubmitted] = useState(false); // New state variable
   const [allMessages, setAllMessages] = useState([]);
   useEffect(() => {
+    const socket = io("https://triviadrome.herokuapp.com/");
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
       setUsername(storedUsername);
