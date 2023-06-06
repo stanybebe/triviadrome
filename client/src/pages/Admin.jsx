@@ -9,7 +9,7 @@ function Admin() {
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const sockets = io("https://triviadrome.herokuapp.com/");
+  var sockets = io('/',{transports: ['websocket'],upgrade:false});
 
 
   useEffect(() => {

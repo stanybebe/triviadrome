@@ -33,7 +33,7 @@ const io = socketIO(server, {
   },
 });
 
-
+io.set('transports', ['websocket']);
 
 // Socket.IO configuration
 io.on('connection', (socket) => {
