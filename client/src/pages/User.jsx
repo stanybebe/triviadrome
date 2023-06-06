@@ -15,7 +15,9 @@ function User() {
 
   
   useEffect(() => {
-    sockets.current = io('https://triviadrome.herokuapp.com/');
+    sockets.current = io('https://triviadrome.herokuapp.com/',{
+      autoConnect: false
+    });
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
       setUsername(storedUsername);
@@ -59,6 +61,7 @@ function User() {
   const handleJoinSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
+    sockets.current.connect();
     localStorage.setItem('storedUsername', username);
     sockets.current.emit('getJoinedUsers', username);
   };
