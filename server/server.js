@@ -1,11 +1,12 @@
-'use strict';
+
 
 const express = require('express');
 const http = require('http');
-const path = require("path");
+
 const cors = require('cors');
 const app = express();
 const socketIO = require('socket.io');
+
 
 const PORT = process.env.PORT || 3001;
 
@@ -14,17 +15,20 @@ const joinedUsers = [];
 // Serve the client build folder
 
 
-app.use(cors());
 
 
-const INDEX = '/index.html';
 
-const server = express().listen(PORT, () => console.log(`Listening on ${PORT}`));
+const server = http.createServer(app);
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+
 
 const io = socketIO(server, {
   cors: {
-    origin: 'https://brilliant-arithmetic-e7a72c.netlify.app/' ,
-
+    origin: 'http://brilliant-arithmetic-e7a72c.netlify.app/' ,
+    methods: ["GET", "POST"]
   },
 });
 
@@ -33,6 +37,7 @@ const io = socketIO(server, {
 // Socket.IO configuration
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
+  console.log('why', socket.id);
   const id = socket.id;
   
   socket.on('getJoinedUsers', (username) => {
