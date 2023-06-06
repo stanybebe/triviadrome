@@ -7,7 +7,7 @@ export default function Test() {
         const sockets = io("https://triviadrome.herokuapp.com/");
         sockets.emit('suppp',"sup");
       return () => {
-        socket.off('suppp');
+        sockets.off('suppp');
       }
     }, []);
     
