@@ -13,8 +13,10 @@ function Admin() {
   const sockets = useRef(null);
 
   useEffect(() => {
-    sockets.current = io('https://triviadrome.herokuapp.com/',
-    );
+    sockets.current = io('https://triviadrome.herokuapp.com/',{
+  
+      transports: ["websocket"]
+    });
     console.log(allOut);
     // const socket = io("http://triviadrome.herokuapp.com");
     sockets.current.emit('getJoinedUsers');
