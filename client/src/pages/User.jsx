@@ -15,9 +15,7 @@ function User() {
 
   
   useEffect(() => {
-    sockets.current = io(socketURL, {
-      autoConnect: false,
- });
+    sockets.current = io(socketURL);
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
       setUsername(storedUsername);
