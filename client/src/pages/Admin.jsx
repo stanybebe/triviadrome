@@ -9,15 +9,15 @@ function Admin() {
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const sockets = io("http://triviadrome.herokuapp.com");
+  const sockets = io("https://triviadrome.herokuapp.com");
 
 
   useEffect(() => {
     console.log(allOut);
-    const socket = io("http://triviadrome.herokuapp.com");
-    socket.emit('getJoinedUsers');
+    // const socket = io("http://triviadrome.herokuapp.com");
+    sockets.emit('getJoinedUsers');
     
-socket.on('joinedUsers', (users) => {
+sockets.on('joinedUsers', (users) => {
   const uniqueUsernames = new Set();
   const filteredUsers = users.filter((user) => {
     if (!uniqueUsernames.has(user.username) && user.username) {
@@ -29,7 +29,7 @@ socket.on('joinedUsers', (users) => {
   setJoinedUsers(filteredUsers);
 });
 
-       socket.on('adminMessage', (data) => {
+       sockets.on('adminMessage', (data) => {
       console.log('Received message:', data);
       const { userId, message } = data;
       console.log(data);
@@ -48,7 +48,7 @@ socket.on('joinedUsers', (users) => {
     });
 
     return () => {
-      socket.disconnect();
+      sockets.disconnect();
     };
   }, []);
 
