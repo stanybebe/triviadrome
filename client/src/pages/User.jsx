@@ -10,8 +10,9 @@ function User() {
   const [errMessage, setErrMessage] = useState('');
   const [submitted, setSubmitted] = useState(false); // New state variable
   const [allMessages, setAllMessages] = useState([]);
+  const socket = io("https://triviadrome.herokuapp.com/");
   useEffect(() => {
-    const socket = io("https://triviadrome.herokuapp.com/");
+
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
       setUsername(storedUsername);
