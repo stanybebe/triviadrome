@@ -15,9 +15,7 @@ function User() {
 
   
   useEffect(() => {
-    sockets.current = io('https://triviadrome.herokuapp.com/',{
-      autoConnect: false
-    });
+    sockets.current = io('https://triviadrome.herokuapp.com/');
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
       setUsername(storedUsername);
