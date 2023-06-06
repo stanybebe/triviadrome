@@ -26,9 +26,10 @@ const server = express()
 const io = socketIO(server, {
   cors: {
     origin: 'https://brilliant-arithmetic-e7a72c.netlify.app/' ,
-    methods: ["GET", "POST"]
+    
   },
 });
+
 
 
 // Socket.IO configuration
