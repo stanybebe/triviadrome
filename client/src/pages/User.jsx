@@ -11,6 +11,7 @@ function User() {
   const [submitted, setSubmitted] = useState(false); // New state variable
   const [allMessages, setAllMessages] = useState([]);
   const socket = io("https://triviadrome.herokuapp.com/");
+  
   useEffect(() => {
  
     const storedUsername = localStorage.getItem('storedUsername');
