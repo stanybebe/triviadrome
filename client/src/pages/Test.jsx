@@ -4,7 +4,7 @@ export default function Test() {
 
 
      useEffect(() => {
-        const socket = io("https://triviadrome.herokuapp.com/");
+        const sockets = io("https://triviadrome.herokuapp.com/");
         sockets.emit('suppp',"sup");
       return () => {
         socket.off('suppp');
