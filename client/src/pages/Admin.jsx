@@ -9,11 +9,11 @@ function Admin() {
   const [joinedUsers, setJoinedUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const socketURL = "https://triviadrome.herokuapp.com/";
-  let sockets = useRef(null);
+
+  const sockets = useRef(null);
 
   useEffect(() => {
-    sockets.current = io(socketURL);
+    sockets.current = io('https://triviadrome.herokuapp.com/');
     console.log(allOut);
     // const socket = io("http://triviadrome.herokuapp.com");
     sockets.current.emit('getJoinedUsers');
@@ -51,7 +51,7 @@ sockets.current.on('joinedUsers', (users) => {
     return () => {
       sockets.current.disconnect();
     };
-  }, [socketURL]);
+  }, []);
 
   const handleUserSelect = (user,userId) => {
     setSelectedUser(user);

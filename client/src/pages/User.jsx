@@ -10,12 +10,12 @@ function User() {
   const [errMessage, setErrMessage] = useState('');
   const [submitted, setSubmitted] = useState(false); // New state variable
   const [allMessages, setAllMessages] = useState([]);
-  const socketURL = "https://triviadrome.herokuapp.com/";
-  let sockets = useRef(null);
+  
+  const sockets = useRef(null);
 
   
   useEffect(() => {
-    sockets.current = io(socketURL);
+    sockets.current = io('https://triviadrome.herokuapp.com/');
     const storedUsername = localStorage.getItem('storedUsername');
     if (storedUsername) {
       setUsername(storedUsername);
@@ -41,7 +41,7 @@ function User() {
       sockets.current.off('adminMessageIn');
       sockets.current.off('joinError');
     };
-  }, [socketURL]); // Empty dependency array to run effect only once
+  }, []); // Empty dependency array to run effect only once
 
   const handleUsernameChange = (event) => {
     
