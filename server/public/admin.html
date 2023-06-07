@@ -22,9 +22,9 @@
           <div id="chatMessages" class="bg-white p-4"></div>
         </div>
   
-        <form class="flex items-center">
+        <form class="flex items-center" onSubmit="return false">
           <input type="text" id="messageInput" class="w-full p-2 border rounded mr-2" placeholder="Enter a message" autocomplete="off">
-          <button id="sendMessageBtn" type="button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Send</button>
+          <button id="sendMessageBtn"  type="button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Send</button>
         </form>
       </div>
     </div>
@@ -78,8 +78,8 @@ function renderChatMessages() {
   allOut.forEach((message) => {
     if (message.username === selectedUser) {
     const div = document.createElement('div');
-    div.textContent = `${message.sender} ${message.content}`;
-    div.classList.add('mb-2');
+    div.textContent = `${message.sender}: ${message.content}`;
+    div.classList.add('mb-2', 'font-bold');
     chatMessages.appendChild(div);
   }})
 }
@@ -104,7 +104,7 @@ function handleSendMessage(event) {
   if (selectedUser) {
   
   const newMessAdmin = {
-    sender: "admin",
+    sender: "Admin",
     username: selectedUser,
     content: messagesOut,
   };
