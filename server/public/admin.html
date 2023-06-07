@@ -9,25 +9,28 @@
     <h1 class="text-3xl font-bold mb-4">Admin Page</h1>
   
     <div class="flex">
-      <div class="w-1/4 mr-4">
-        <div class="mb-8">
-          <h2 class="text-xl font-semibold">Joined Users</h2>
-          <ul id="joinedUsersList" class="list-disc pl-4"></ul>
+        <div class="w-1/4 mr-4">
+          <div class="mb-8">
+            <h2 class="text-xl font-semibold">Joined Users</h2>
+            <ul id="joinedUsersList" class="list-disc pl-4"></ul>
+          </div>
         </div>
-      </div>
-  
-      <div class="flex-1">
-        <div id="chatContainer" class="mb-8">
+      
+        <div class="flex-1">
           <h2 id="selectedUserText" class="text-xl font-semibold mb-2">Selected User:</h2>
-          <div id="chatMessages" class="bg-white p-4"></div>
+          <div id="chatContainer" class="mb-4 h-64 overflow-y-auto">
+            <div id="chatMessages" class="bg-white p-4"></div>
+          </div>
+      
+          <form class="flex items-center">
+            <div class="w-full flex">
+              <input type="text" id="messageInput" class="w-full p-2 border rounded mr-2" placeholder="Enter a message" autocomplete="off">
+              <button id="sendMessageBtn" type="button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Send</button>
+            </div>
+          </form>
         </div>
-  
-        <form class="flex items-center" onSubmit="return false">
-          <input type="text" id="messageInput" class="w-full p-2 border rounded mr-2" placeholder="Enter a message" autocomplete="off">
-          <button id="sendMessageBtn"  type="button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Send</button>
-        </form>
       </div>
-    </div>
+      
   <script src="/socket.io/socket.io.js"></script>
 <script>
 // Create a socket.io client instance
@@ -56,16 +59,6 @@ function renderJoinedUsers() {
     const li = document.createElement('li');
     li.textContent = user.username;
     li.classList.add('cursor-pointer', 'p-2', 'mb-2');
-
-    // Highlight selected user
-    if (user.username === selectedUser) {
-      li.classList.add('bg-blue-500', 'text-white');
-      li.classList.remove('bg-white');
-    } else {
-      li.classList.add('bg-white');
-      li.classList.remove('bg-blue-500', 'text-white');
-    }
-
     li.addEventListener('click', () => handleUserSelect(user.username, user.id));
     joinedUsersList.appendChild(li);
   });
