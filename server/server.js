@@ -3,10 +3,15 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const socketIO = require("socket.io");
-app.use(cors());
+const path = require("path");
 
-const server = http.createServer(app);
 
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', "script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'");
+  next();
+});
 
 
 const PORT = process.env.PORT || 3001;
@@ -17,24 +22,27 @@ const joinedUsers = [];
 
 
 
+const server = http.createServer(app);
+const io = socketIO(server,{
+  origin: "https://triviadrome.herokuapp.com"
+});
 
+// Serve static files from the "public" directory
+app.use(express.static('public'));
 
+// Define routes for each HTML page
+app.get('/admin', (req, res) => {
+  res.sendFile(__dirname + '/public/admin.html');
+});
 
+app.get('/home', (req, res) => {
+  res.sendFile(__dirname + '/public/home.html');
+});
+
+setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-
-const io = socketIO(server, {
-  cors: {
-    origin: 'https://brilliant-arithmetic-e7a72c.netlify.app/' ,
-    
-  },
-});
-
-
-
 // Socket.IO configuration
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);

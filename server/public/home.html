@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triviadrome</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" type="text/css" href="/output.css">
+</head>
+<body>
+  <div id="root" class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-5"></div>
+
+  <script>
+    const sockets = io();
+
+    let username = '';
+    let email = '';
+    let message = '';
+    let errMessage = '';
+    let submitted = false;
+    let allMessages = [];
+
+    function handleJoinSubmit(e) {
+      e.preventDefault();
+      submitted = true;
+      sockets.connect();
+      localStorage.setItem('storedUsername', username);
+      sockets.emit('getJoinedUsers', username);
+      updateUI();
+    }
+
+    function handleUsernameChange(event) {
+      username = event.target.value;
+    }
+
+    function handleEmailChange(event) {
+      email = event.target.value;
+    }
+
+    function handleMessageChange(event) {
+      message = event.target.value;
+    }
+
+    function handleMessageSubmit(e) {
+      e.preventDefault();
+      const newMessage = {
+        sender: username,
+        content: message
+      };
+      allMessages.push(newMessage);
+      sockets.emit('userMessage', { username, message });
+      message = '';
+      updateUI();
+    }
+
+    function renderJoinForm() {
+      return `
+        <form class="mb-4" onsubmit="handleJoinSubmit(event)">
+          <label class="text-lg" for="username">Username:</label>
+          <input class="w-full p-2 border rounded" type="text" id="username" required onchange="handleUsernameChange(event)" value="${username}">
+
+          <label class="text-lg" for="email">Email:</label>
+          <input class="w-full p-2 border rounded" type="email" id="email" required onchange="handleEmailChange(event)" value="${email}">
+
+          <button class="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600" type="submit">Join</button>
+        </form>
+      `;
+    }
+
+    function renderChat() {
+      const messageElements = allMessages.map((msg) => {
+        return `
+          <div class="message p-2">
+            <strong class="sender">${msg.sender}: </strong>
+            <span class="content">${msg.content}</span>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div>
+          <h2 class="text-2xl mb-4">Welcome, ${localStorage.getItem('storedUsername')}!</h2>
+          <form class="mb-4" onsubmit="handleMessageSubmit(event)">
+            <label class="text-lg" for="message">Message:</label>
+            <input class="w-full p-2 border rounded" type="text" required onchange="handleMessageChange(event)" value="${message}">
+
+            <button class="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600" type="submit">Send</button>
+          </form>
+
+          <div>${errMessage}</div>
+
+          <h1 class="text-2xl">Messages</h1>
+          <div class="h-80 bg-white overflow-y-auto">${messageElements}</div>
+        </div>
+      `;
+    }
+
+    const root = document.getElementById('root');
+
+    function updateUI() {
+      const content = submitted ? renderChat() : renderJoinForm();
+      root.innerHTML = `
+        <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-5">
+          ${content}
+        </div>
+      `;
+    }
+
+    function init() {
+      const storedUsername = localStorage.getItem('storedUsername');
+      if (storedUsername) {
+        username = storedUsername;
+      }
+
+      sockets.on('adminMessageIn', (data) => {
+        if (localStorage.getItem('storedUsername') === data.username) {
+          const newMessageAdmin = {
+            sender: 'Admin',
+            content: data.message
+          };
+          allMessages.push(newMessageAdmin);
+          updateUI();
+        }
+      });
+
+      sockets.on('joinError', (data) => {
+        errMessage = data;
+        updateUI();
+      });
+    }
+
+    init();
+    updateUI();
+  </script>
+</body>
+</html>

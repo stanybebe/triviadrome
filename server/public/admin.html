@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Page</title>
+  <link rel="stylesheet" type="text/css" href="/output.css">
+</head>
+
+<body class="bg-gray-100 p-5">
+    <h1 class="text-3xl font-bold mb-4">Admin Page</h1>
+  
+    <div class="flex">
+      <div class="w-1/4 mr-4">
+        <div class="mb-8">
+          <h2 class="text-xl font-semibold">Joined Users</h2>
+          <ul id="joinedUsersList" class="list-disc pl-4"></ul>
+        </div>
+      </div>
+  
+      <div class="flex-1">
+        <div id="chatContainer" class="mb-8">
+          <h2 id="selectedUserText" class="text-xl font-semibold mb-2">Selected User:</h2>
+          <div id="chatMessages" class="bg-white p-4"></div>
+        </div>
+  
+        <form class="flex items-center">
+          <input type="text" id="messageInput" class="w-full p-2 border rounded mr-2" placeholder="Enter a message" autocomplete="off">
+          <button id="sendMessageBtn" type="button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Send</button>
+        </form>
+      </div>
+    </div>
+  <script src="/socket.io/socket.io.js"></script>
+<script>
+// Create a socket.io client instance
+const socket = io();
+
+// State variables
+let messages = [];
+let messagesOut = '';
+let allOut = [];
+let selectedUser = '';
+let selectedUserId = '';
+let joinedUsers = [];
+
+// DOM elements
+const joinedUsersList = document.getElementById('joinedUsersList');
+const chatContainer = document.getElementById('chatContainer');
+const selectedUserText = document.getElementById('selectedUserText');
+const chatMessages = document.getElementById('chatMessages');
+const messageInput = document.getElementById('messageInput');
+const sendMessageBtn = document.getElementById('sendMessageBtn');
+
+
+function renderJoinedUsers() {
+  joinedUsersList.innerHTML = '';
+  joinedUsers.forEach((user) => {
+    const li = document.createElement('li');
+    li.textContent = user.username;
+    li.classList.add('cursor-pointer', 'p-2', 'mb-2');
+
+    // Highlight selected user
+    if (user.username === selectedUser) {
+      li.classList.add('bg-blue-500', 'text-white');
+      li.classList.remove('bg-white');
+    } else {
+      li.classList.add('bg-white');
+      li.classList.remove('bg-blue-500', 'text-white');
+    }
+
+    li.addEventListener('click', () => handleUserSelect(user.username, user.id));
+    joinedUsersList.appendChild(li);
+  });
+}
+
+
+// Function to render chat messages
+function renderChatMessages() {
+  chatMessages.innerHTML = '';
+  allOut.forEach((message) => {
+    if (message.username === selectedUser) {
+    const div = document.createElement('div');
+    div.textContent = `${message.sender} ${message.content}`;
+    div.classList.add('mb-2');
+    chatMessages.appendChild(div);
+  }})
+}
+
+// Event listener for user selection
+function handleUserSelect(username, userId) {
+  selectedUser = username;
+  selectedUserId = userId;
+  selectedUserText.textContent = `Selected User: ${selectedUser}`;
+  renderChatMessages();
+}
+
+// Event listener for message input change
+function handleMessageChange(event) {
+  messagesOut = event.target.value;
+//   console.log(messagesOut)
+}
+
+// Event listener for send message button
+function handleSendMessage(event) {
+  event.preventDefault();
+  if (selectedUser) {
+  
+  const newMessAdmin = {
+    sender: "admin",
+    username: selectedUser,
+    content: messagesOut,
+  };
+    allOut.push(newMessAdmin);
+    socket.emit('adminMessageOut', { id: selectedUserId, username: selectedUser, message: messagesOut });
+    messagesOut = '';
+    messageInput.value = ''; 
+    renderChatMessages();
+    console.log(allOut);
+  }
+}
+
+// Socket event listeners
+socket.on('joinedUsers', (users) => {
+  const uniqueUsernames = new Set();
+  const filteredUsers = users.filter((user) => {
+    if (!uniqueUsernames.has(user.username) && user.username) {
+      uniqueUsernames.add(user.username);
+      return true;
+    }
+    return false;
+  });
+  joinedUsers = filteredUsers;
+  renderJoinedUsers();
+});
+
+socket.on('adminMessage', (data) => {
+  const { userId, message } = data;
+  const newMessageUser = {
+    sender: userId,
+    username: userId,
+    content: message,
+  };
+  messages.push({ userId, message });
+  allOut.push(newMessageUser);
+  renderChatMessages();
+});
+
+// Attach event listeners
+messageInput.addEventListener('input', handleMessageChange);
+sendMessageBtn.addEventListener('click', handleSendMessage);
+
+</script>
+</body>
+</html>
